@@ -22,33 +22,44 @@ class ExpoApplistModule : Module() {
     Name("ExpoApplist")
 
     // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-    Function("getApps") {
-      val pm: PackageManager? = appContext.reactContext?.getPackageManager();
-      val packagesAll: List<PackageInfo>? = pm?.getInstalledPackages(0)
-
+    Function("getApps") { apiLevel: Int ->
       val list: WritableArray = Arguments.createArray();
-      when (packagesAll) {
-        null -> {}
-        else ->
-          for (packageInfo in packagesAll) {
-            val appInfo: WritableMap = Arguments.createMap();
 
-            appInfo.putString("packageName", packageInfo.packageName);
-            appInfo.putDouble("firstInstallTime", (packageInfo.firstInstallTime).toDouble());
-            appInfo.putDouble("lastUpdateTime", (packageInfo.lastUpdateTime).toDouble());
-            appInfo.putString("appName", packageInfo.applicationInfo.loadLabel(pm).toString().trim());
-            appInfo.putBoolean("isSystemApp", (packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 1);
-            //val isSystemAppFlag = packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM
-            //when (isSystemAppFlag) {
-            //  0 -> appInfo.putBoolean("isSystemApp", false)
-            //  else -> appInfo.putBoolean("isSystemApp", true)
-            //}
-            //appInfo.putInt("flags", packageInfo.applicationInfo.flags)
+      try {
+        val pm: PackageManager = appContext.reactContext!!.getPackageManager();
+        val packagesAll: List<PackageInfo>?
 
-            list.pushMap(appInfo);
-          }
+        if (apiLevel < 33) {
+          packagesAll = pm?.getInstalledPackages(0)
+        } else {
+          packagesAll = pm?.getInstalledPackages(PackageManager.PackageInfoFlags.of(0))
+        }
+
+        when (packagesAll) {
+          null -> {}
+          else ->
+            for (packageInfo in packagesAll) {
+              val appInfo: WritableMap = Arguments.createMap();
+
+              appInfo.putString("packageName", packageInfo.packageName);
+              appInfo.putDouble("firstInstallTime", (packageInfo.firstInstallTime).toDouble());
+              appInfo.putDouble("lastUpdateTime", (packageInfo.lastUpdateTime).toDouble());
+              appInfo.putString("appName", packageInfo.applicationInfo.loadLabel(pm).toString().trim());
+              appInfo.putBoolean("isSystemApp", (packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 1);
+              //val isSystemAppFlag = packageInfo.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM
+              //when (isSystemAppFlag) {
+              //  0 -> appInfo.putBoolean("isSystemApp", false)
+              //  else -> appInfo.putBoolean("isSystemApp", true)
+              //}
+              //appInfo.putInt("flags", packageInfo.applicationInfo.flags)
+
+              list.pushMap(appInfo);
+            }
+        }
+        return@Function list
+      } catch (e: Exception) {
+        return@Function list
       }
-      return@Function list
     }
   }
 }

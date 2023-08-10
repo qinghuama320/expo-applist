@@ -28,7 +28,6 @@
   "author": "qinghua.ma <qinghua.ma@shopee.com> (https://github.com/qinghuama320)",
   "license": "MIT",
   "homepage": "https://github.com/qinghuama320/expo-applist#readme",
-  "dependencies": {},
   "devDependencies": {
     "@types/react": "^18.0.25",
     "expo-module-scripts": "^3.0.11",

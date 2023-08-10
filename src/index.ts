@@ -2,6 +2,6 @@
 // and on native platforms to ExpoApplist.ts
 import ExpoApplistModule from "./ExpoApplistModule";
 
-export function getApps(): any[] {
-  return ExpoApplistModule.getApps();
+export function getApps(apiLevel: number): any[] {
+  return ExpoApplistModule.getApps(apiLevel);
 }
