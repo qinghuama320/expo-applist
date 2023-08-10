@@ -24,8 +24,7 @@ class ExpoApplistModule : Module() {
     // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
     Function("getApps") {
       val pm: PackageManager? = appContext.reactContext?.getPackageManager();
-      val packagesAll: List<PackageInfo>? =
-        pm?.getInstalledPackages(PackageManager.PackageInfoFlags.of(0))
+      val packagesAll: List<PackageInfo>? = pm?.getInstalledPackages(0)
 
       val list: WritableArray = Arguments.createArray();
       when (packagesAll) {
