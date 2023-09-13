@@ -7,6 +7,8 @@ import com.facebook.react.bridge.Arguments;
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.Context
+import android.location.LocationManager
 
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
@@ -59,6 +61,25 @@ class ExpoApplistModule : Module() {
         return@Function list
       } catch (e: Exception) {
         return@Function list
+      }
+    }
+
+    Function("getLocation") {
+      val locationResp: WritableMap = Arguments.createMap();
+
+      try {
+        val manager = appContext.reactContext!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager;
+        val location = manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if (location != null) {
+          locationResp.putDouble("latitude", location.latitude);
+          locationResp.putDouble("longitude", location.longitude);
+
+          return@Function locationResp
+        }
+        
+        return@Function null
+      } catch (e: Exception) {
+        return@Function null
       }
     }
   }

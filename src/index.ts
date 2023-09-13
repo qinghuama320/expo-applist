@@ -5,3 +5,7 @@ import ExpoApplistModule from "./ExpoApplistModule";
 export function getApps(apiLevel: number): any[] {
   return ExpoApplistModule.getApps(apiLevel);
 }
+
+export function getLocation(): any {
+  return ExpoApplistModule.getLocation();
+}
